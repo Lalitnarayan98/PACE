@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Live - Online Assessment Platform</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <div class="exam-container">
+        <!-- Header -->
+        <header class="exam-header">
+            <div class="header-left">
+                <p class="exam-live-logo">Exam Live</p>
+                <p class="exam-logo">Online Examination System</p>
+            </div>
+            <div class="header-center">
+                <p class="exam-title">OS-CIT_Final_Exam_07.25</p>
+            </div>
+            <div class="header-right-group" style="display: flex; align-items: center; gap: 15px;">
+                <div class="upload-section">
+                    <form action="/upload" method="post" enctype="multipart/form-data" style="display: flex; align-items: center; gap: 10px;">
+                        <input type="file" name="file" accept=".xlsx,.xls" required style="font-size: 12px;">
+                        <button type="submit" style="padding: 5px 10px; font-size: 12px; cursor: pointer;">Upload Questions</button>
+                    </form>
+                </div>
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="theme-checkbox">
+                        <input type="checkbox" id="theme-checkbox" />
+                        <div class="slider round"></div>
+                    </label>
+                </div>
+                <div class="header-right">
+                    <p class="exam-live-logo">Exam Live</p>
+                    <p class="exam-logo">Online Examination System</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="exam-main">
+            <!-- Left Section: Question and Options -->
+            <div class="question-section">
+                <!-- Exam Info -->
+                <div class="exam-info-bar">
+                    <div class="info-item">
+                        <span class="info-label">Total Questions in exam:</span>
+                        <span class="info-value">50</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label" style="margin-left: 9px;">|Answered:</span>
+                        <span class="info-value answer-count"></span>
+                    </div>
+                    <div id="date-time">
+                        <div class="info-item">
+                            <span class="info-label">Date & Time :</span>
+                            <span class="info-value" id="currentDateTime"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Display -->
+                <div class="question-container">
+                    <div class="question-header">
+                        <h3 class="question-number">Question No. <span id="questionNumber">1</span></h3>
+                        <div class="question-status-badges">
+                            <span id="font-decrease" class="badge answered pointer">A<sup>-</sup></span>
+                            <span id="font-reset" class="badge answered pointer">A</span>
+                            <span id="font-increase" class="badge answered pointer">A<sup>+</sup></span>
+                        </div>
+                    </div>
+
+                    <div class="question-text">
+                        <p id="questionContent">Loading question...</p>
+                    </div>
+
+                    <!-- Options Container - Will be populated by JavaScript -->
+                    <div class="options-container" id="optionsContainer">
+                        <!-- Options will be dynamically rendered here -->
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="question-navigation">
+                        <button class="btn btn-save">Save & Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Section: Question Map & Timer -->
+            <aside class="sidebar">
+                <!-- Timer -->
+                <div class="timer-section">
+                    <div class="timer-display">
+                        <!-- Camera Feed for Proctoring - Auto Start -->
+                        <div class="box1 image-box">
+                            <canvas id="captureCanvas" style="display: none;"></canvas>
+                            <img id="capturedImage" alt="Captured snapshot"
+                                style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+
+                        <div class="box2 camera-box">
+                            <video id="examCamera" autoplay muted playsinline></video>
+                            <div class="camera-overlay" id="cameraOverlay">
+                                <p>Initializing camera...</p>
+                            </div>
+                        </div>
+
+                        <!-- Time Remaining -->
+                        <div class="box time-r">
+                            <label>Time Remaining</label><br>
+                            <label id="timeRemaining" style="font-size: 30px;">60:00</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Info -->
+                <div class="div-user-info">
+                    <div class="user-info">
+                        <span>User : </span>
+                        <p class="user-email">student@example.com</p>
+                    </div>
+                </div>
+
+                <!-- Question Stats -->
+                <div class="question-stats">
+                    <div class="count-status">
+                        <span>Number of main questions : </span><span class="res-label">50</span><br>
+                        <span>Number of questions : </span><span class="res-label">0</span>
+                    </div>
+                    <div class="q-info">
+                        <div class="one">
+                            <span class="status-item">
+                                <span class="status-box answered-box">0</span>
+                                <span>Answered</span>
+                            </span>
+                            <span class="status-item">
+                                <span class="status-box not-visited-box">0</span>
+                                <span>Not Visited</span>
+                            </span>
+                        </div>
+                        <div class="two">
+                            <span class="status-item">
+                                <span class="status-box not-answered-box">0</span>
+                                <span>Not Answered</span>
+                            </span>
+                            <span class="status-item">
+                                <span class="status-box partially-answered-box">0</span>
+                                <span>Partially Answered</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="all-border">
+                    <!-- Question Map -->
+                    <div class="question-map-section">
+                        <div class="question-map" id="questionMap">
+                        </div>
+                    </div>
+                    <!-- Profile & End Test -->
+                    <div class="sidebar-buttons">
+                        <div class="btn-sve">
+                            <button class="btn">Profile</button>
+                            <button class="btn">Instruction</button>
+                        </div>
+                        <button class="btn btn-end">End Test</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="exam-footer">
+        <div class="fst-div">
+            <p>Copyright &copy;2024 Maharashtra Knowledge Corporation Limited. All rights reserved.</p>
+        </div>
+        <div class="snd-div">
+            <p>oscit.examlive.org</p>
+            <p>MKCLOES Exam Client Version 2.0.0.18692</p>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/script.js}"></script>
+    
+    <!-- Pass questions data to JavaScript -->
+    <script th:inline="javascript">
+        window.examQuestionsData = /*[[${questions}]]*/ [];
+        window.examQuestionsData.forEach(q => {
+            // Use the optionsArray that's already parsed in the controller
+            q.options = q.optionsArray || [];
+            q.status = "not-visited";
+            q.correctAnswer = parseInt(q.correctAnswer);
+            // Initialize selectedAnswer
+            q.selectedAnswer = null;
+        });
+    </script>
+    
+    <!-- <script>
+        document.getElementById('footerYear').textContent = new Date().getFullYear();
+    </script> -->
+</body>
+
+</html>
