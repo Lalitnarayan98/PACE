@@ -1,4 +1,4 @@
-package com.example.examappbackend.controller;
+package com.example.examappbackend.restController;
 
 import com.example.examappbackend.entity.Question;
 import com.example.examappbackend.repository.QuestionRepository;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/questions")
-public class QuestionController {
+public class QuestionRestController {
 
     @Autowired
     private QuestionRepository questionRepository;

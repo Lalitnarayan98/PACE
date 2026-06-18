@@ -9,18 +9,18 @@ import jakarta.persistence.GeneratedValue;
 public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String name;    
     private String createdOn;
     private String createdBy;
     private String updatedOn;
     private String updatedBy;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

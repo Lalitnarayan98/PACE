@@ -64,4 +64,12 @@ public class Question {
     public void setOptionsArray(List<String> optionsArray) {
         this.optionsArray = optionsArray;
     }
+
+    public void setModule(Module module){
+        this.module = module;
+    }
+
+    public Module getModule(){
+        return this.module;
+    }
 }

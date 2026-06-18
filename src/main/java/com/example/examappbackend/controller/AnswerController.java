@@ -1,34 +1,38 @@
 package com.example.examappbackend.controller;
 
-import com.example.examappbackend.entity.Answer;
-import com.example.examappbackend.repository.AnswerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.examappbackend.entity.User;
+import com.example.examappbackend.service.AnswerService;
 
-@RestController
-@RequestMapping("/api/answers")
+import jakarta.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
+
+
+@Controller
+@RequestMapping("/answers")
 public class AnswerController {
 
     @Autowired
-    private AnswerRepository answerRepository;
+    AnswerService answerService;
 
-    @GetMapping
-    public List<Answer> getAllAnswers() {
-        return answerRepository.findAll();
-    }
-
-    @PostMapping
-    public Answer createAnswer(@RequestBody Answer answer) {
-        return answerRepository.save(answer);
-    }
-
-    @GetMapping("/student/{studentId}")
-    public List<Answer> getAnswersByStudent(@PathVariable Long studentId) {
-        return answerRepository.findAll().stream()
-                .filter(answer -> answer.getStudentId().equals(studentId))
-                .toList();
+    @PostMapping("/save")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> saveAnswer(HttpSession session, @RequestParam("answer") int correctAnswer, @RequestParam("questionId") int questionId){
+        Map<String, Object> response = new HashMap<>();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            response.put("success", false);
+            response.put("message", "Not logged in");
+            return ResponseEntity.ok(response);
+        }
+        boolean saved = answerService.saveAnswer(user, questionId, correctAnswer);
+        response.put("success", saved);
+        response.put("message", saved ? "Answer saved successfully" : "Failed to save answer");
+        return ResponseEntity.ok(response);
     }
 }

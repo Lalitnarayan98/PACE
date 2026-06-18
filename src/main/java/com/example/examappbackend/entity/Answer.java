@@ -9,11 +9,17 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long studentId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private Long questionId;
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private Question question;
 
-    private String answer;
+    private int correctAnswer;
+
+    private String answerText;
 
     // Getters and Setters
     public Long getId() {
@@ -24,27 +30,35 @@ public class Answer {
         this.id = id;
     }
 
-    public Long getStudentId() {
-        return studentId;
+    public User getUser() {
+        return user;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Long getQuestionId() {
-        return questionId;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
-    public String getAnswer() {
-        return answer;
+    public String getAnswerText() {
+        return answerText;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
+    }
+
+    public int getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(int correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 }
